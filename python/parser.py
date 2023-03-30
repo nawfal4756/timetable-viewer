@@ -7,6 +7,8 @@ import os
 TIMETABLE_NAME = sys.argv[1]
 batchCoursesList = []
 periodsList = []
+daysListEnumerated = []
+batchesEnumerated = []
 
 def getCourses(timetableName, sheetName):
     strippedValues = []
@@ -25,7 +27,7 @@ def getSlots(sheet):
     columnsLength = len(sheet.columns)
     for rowIndex in range(1,2):
         for columnIndex in range (1, columnsLength):
-            slotList.append({columnIndex: sheet.iloc[rowIndex, columnIndex]})
+            slotList.append({"slot": int(columnIndex), "time": sheet.iloc[rowIndex, columnIndex]})
             
     return slotList
 
@@ -56,11 +58,12 @@ def getAllPeriods(sheet):
                     if slotDetail.find("\n") != -1:
                         slotTeacher = slotDetail.split("\n")
                         slotSeperated = slotTeacher[0].split(" ")
-                        subject = slotSeperated[0].strip()
                         if len(slotSeperated) > 2:
                             section = slotSeperated[2].strip()
+                            subject = slotSeperated[0].strip() + "-" + slotSeperated[1].strip()
                         else:
                             section = slotSeperated[1].strip()
+                            subject = slotSeperated[0].strip()
                         teacher = slotTeacher[1].strip()
                         slot = sheet.iloc[0, columnIndex]
                         room = sheet.iloc[rowIndex, 0]
@@ -72,15 +75,22 @@ def getAllPeriods(sheet):
 
 daysList, batchesList = extractWorksheetName(TIMETABLE_NAME)
 
-for value in batchesList:
+for index, value in enumerate(batchesList):
     courseList = getCourses(TIMETABLE_NAME, value)
-    batchCoursesList.append({value: courseList})
+    batchCoursesList.append(courseList)
+    batchesEnumerated.append({"value": index, "course":value})
 
-for value in daysList:
-    sheet = pd.read_excel(TIMETABLE_NAME, sheet_name=daysList[0])
+for index, value in enumerate(daysList):
+    sheet = pd.read_excel(TIMETABLE_NAME, sheet_name=value)
     slotList = getSlots(sheet)
     classesList = getAllPeriods(sheet)
-    periodsList.append({value: {"slots": slotList, "classes": classesList}})
+    periodsList.append({"slots": slotList, "classes": classesList})
+    daysListEnumerated.append({"value": index, "day":value})
+
+fileName = TIMETABLE_NAME.split("-")
+timetableVersion = "Unknown"
+if len(fileName) > 1:
+    timetableVersion = fileName[1].split(".")[0]
 
 directory = os.getcwd()
 directorySeperated = directory.split("\\")
@@ -88,8 +98,13 @@ directorySeperated.pop()
 finalDirectory = "\\".join(directorySeperated) + "\\data\\timetable.js"
 
 f = open(finalDirectory, "w")
+f.write("export const timetableVersion = '" + timetableVersion + "'\n")
 f.write("export const timetable = ")
 f.write(json.dumps(periodsList))
 f.write("\nexport const batchesCoursesList = ")
 f.write(json.dumps(batchCoursesList))
+f.write("\nexport const daysList = ")
+f.write(json.dumps(daysListEnumerated))
+f.write("\nexport const batchesEnumerated = ")
+f.write(json.dumps(batchesEnumerated))
 f.close()
