@@ -69,6 +69,9 @@ export default function Home({dayNumber, tempTimetable, timetableVersionNumber} 
               </Table>
             </TableContainer>
         </Grid>
+        <Grid xs={12}>
+          <Typography sx={{textAlign: "center", mt: 2, color: "gray"}}>App Version: 0.0</Typography>
+        </Grid>
       </Grid>
     </div>
   )
@@ -81,7 +84,7 @@ export async function getServerSideProps() {
   let today = todayDate.getDay()
   
   if (today < 1 || today > 5) {
-    finalDay = 1
+    finalDay = 0
   }
   else {
     finalDay = today - 1
