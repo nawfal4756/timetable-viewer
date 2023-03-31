@@ -23,11 +23,10 @@ def getCourses(timetableName, sheetName):
 
 def getSlots(sheet):
     slotList = []
-    rowsLength = len(sheet)
     columnsLength = len(sheet.columns)
     for rowIndex in range(1,2):
         for columnIndex in range (1, columnsLength):
-            slotList.append({"slot": int(columnIndex), "time": sheet.iloc[rowIndex, columnIndex]})
+            slotList.append(sheet.iloc[rowIndex, columnIndex])
             
     return slotList
 
