@@ -60,96 +60,105 @@ export default function Home({
         </Head>
       </div>
 
-
       <Fade in={true} timeout={1000}>
-      <Grid container>
-        <Grid
-          xs={12}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h3">Timetable Viewer</Typography>
-          <Typography variant="h5">
-            Timetable Version: {timetableVersionNumber}
-          </Typography>
-        </Grid>
-        <Grid
-          xs={12}
-          sx={{
-            display: "flex",
-            justifyContent: "right",
-            alignItems: "center",
-          }}
-        >
-
-          <FormControlLabel
-            control={
-              <Switch
-                checked={teacherData}
-                onChange={handleTeacherNameChange}
-              />
-            }
-            label="Teacher Name"
-          />
-
-          <InputLabel id="daySelector" sx={{ ml: 1, mr: 1 }}>
-            Day
-          </InputLabel>
-          <Select
-            labelId="daySelector"
-            value={day.toString()}
-            onChange={handleDayChange}
+        <Grid container>
+          <Grid
+            xs={12}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            {daysList.map((object) => {
-              // console.log(object);
-              return (
-                <MenuItem key={object.value} value={object.value}>
-                  {object.day}
-                </MenuItem>
-              );
-            })}
-          </Select>
+            <Typography variant="h3">Timetable Viewer</Typography>
+            <Typography variant="h5">
+              Timetable Version: {timetableVersionNumber}
+            </Typography>
+          </Grid>
+          <Grid
+            xs={12}
+            sx={{
+              display: "flex",
+              justifyContent: "right",
+              alignItems: "center",
+            }}
+          >
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={teacherData}
+                  onChange={handleTeacherNameChange}
+                />
+              }
+              label="Teacher Name"
+            />
+
+            <InputLabel id="daySelector" sx={{ ml: 1, mr: 1 }}>
+              Day
+            </InputLabel>
+            <Select
+              labelId="daySelector"
+              value={day.toString()}
+              onChange={handleDayChange}
+            >
+              {daysList.map((object) => {
+                // console.log(object);
+                return (
+                  <MenuItem key={object.value} value={object.value}>
+                    {object.day}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </Grid>
+
+          <Grid xs={12}>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Slot</TableCell>
+                    <TableCell>Subject</TableCell>
+                    <TableCell>Section</TableCell>
+                    <TableCell>Room</TableCell>
+                    <Fade in={teacherData} timeout={1000}>
+                      <TableCell
+                        style={{ display: teacherData ? "block" : "none" }}
+                      >
+                        Teacher Name
+                      </TableCell>
+                    </Fade>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.classes.map((object, index) => {
+                    return (
+                      <TableRow key={index}>
+                        <TableCell>{data.slots[object.slot - 1]}</TableCell>
+                        <TableCell>{object.subject}</TableCell>
+                        <TableCell>{object.section}</TableCell>
+                        <TableCell>{object.room}</TableCell>
+                        <Fade in={teacherData} timeout={1000}>
+                          <TableCell
+                            style={{ display: teacherData ? "block" : "none" }}
+                          >
+                            {object.teacher}
+                          </TableCell>
+                        </Fade>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          <Grid xs={12}>
+            <Typography sx={{ textAlign: "center", mt: 2, color: "gray" }}>
+              App Version: 0.0.1
+            </Typography>
+          </Grid>
         </Grid>
-        
-        
-        <Grid xs={12}>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Slot</TableCell>
-                  <TableCell>Subject</TableCell>
-                  <TableCell>Section</TableCell>
-                  <TableCell>Room</TableCell>
-                  <Fade in={teacherData} timeout={1000}><TableCell style={{display: teacherData ? "block" : "none"}}>Teacher Name</TableCell></Fade>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.classes.map((object, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>{data.slots[object.slot - 1]}</TableCell>
-                      <TableCell>{object.subject}</TableCell>
-                      <TableCell>{object.section}</TableCell>
-                      <TableCell>{object.room}</TableCell>
-                      <Fade in={teacherData} timeout={1000}><TableCell style={{display: teacherData ? "block" : "none"}}>{object.teacher}</TableCell></Fade>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
-        <Grid xs={12}>
-          <Typography sx={{ textAlign: "center", mt: 2, color: "gray" }}>
-            App Version: 0.0
-          </Typography>
-        </Grid>
-      </Grid>
-        </Fade>
+      </Fade>
     </div>
   );
 }
