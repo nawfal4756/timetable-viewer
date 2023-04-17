@@ -32,7 +32,7 @@ export default function Home({
 }) {
   const [day, setDay] = useState<number>(dayNumber);
   const [data, setData] = useState<TimetableObject>(tempTimetable);
-  const [section, setSection] = useState<string>("BSE-6A");
+  const [displayProperty, setDisplayProperty] = useState<string>("none");
   const [teacherData, setTeacherData] = useState<boolean>(false);
 
   useEffect(() => {
@@ -49,7 +49,21 @@ export default function Home({
   };
 
   const handleTeacherNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setTeacherData(event.target.checked);
+    function changeDisplayProperty() {
+      if (!event.target.checked) {
+        setDisplayProperty("none");
+      } else {
+        setDisplayProperty("");
+      }
+    }
+    if (!event.target.checked) {
+      setTeacherData(event.target.checked);
+      setTimeout(changeDisplayProperty, 1000);
+    }
+    else {
+      changeDisplayProperty()
+      setTeacherData(event.target.checked);
+    }
   };
 
   return (
@@ -123,7 +137,7 @@ export default function Home({
                     <TableCell>Room</TableCell>
                     <Fade in={teacherData} timeout={1000}>
                       <TableCell
-                        style={{ display: teacherData ? "block" : "none" }}
+                        style={{ display: displayProperty }}
                       >
                         Teacher Name
                       </TableCell>
@@ -140,7 +154,7 @@ export default function Home({
                         <TableCell>{object.room}</TableCell>
                         <Fade in={teacherData} timeout={1000}>
                           <TableCell
-                            style={{ display: teacherData ? "block" : "none" }}
+                            style={{ display: displayProperty }}
                           >
                             {object.teacher}
                           </TableCell>
@@ -154,7 +168,7 @@ export default function Home({
           </Grid>
           <Grid xs={12}>
             <Typography sx={{ textAlign: "center", mt: 2, color: "gray" }}>
-              App Version: 0.0.1
+              App Version: 0.0.2
             </Typography>
           </Grid>
         </Grid>
