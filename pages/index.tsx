@@ -1,5 +1,6 @@
 import { TimetableObject } from "@/interface/timetable";
 import {
+  Alert,
   Button,
   Fade,
   FormControlLabel,
@@ -112,7 +113,7 @@ export default function Home({
             </Typography>
           </Grid>
           <Grid xs={12} sx={{paddingY: "2%", display: "flex", justifyContent: "flex-end"}}>
-            <Button variant="contained"><Link href="/selection">Course Selection</Link></Button>
+            <Link href="/selection"><Button variant="contained">Course Selection</Button></Link>
           </Grid>
           <Grid
             xs={12}

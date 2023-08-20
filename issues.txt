@@ -1,0 +1,9 @@
+Slots not sorted
+No notifications
+Labs are shown as 1 hour
+Some sections are not shown properly due to timetable layout issues
+Colors of buttons to be fixed - Done
+Dark mode and themeing to be added
+Disclaimer page to be added
+Offline notification to be added - Done
+Error to be shown if offline and courses are changed

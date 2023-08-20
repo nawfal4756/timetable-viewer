@@ -90,7 +90,7 @@ export default function Selection() {
                         <Typography variant="h3" sx={{textAlign: "center"}}>Subject Selection</Typography>    
                     </Grid>
                     <Grid xs={12} sx={{paddingY: "1%", display: "flex", justifyContent: "flex-end"}}>
-                        <Button variant="contained"><Link href="/">Show Timetable</Link></Button>
+                        <Link href="/"><Button variant="contained">Show Timetable</Button></Link>
                     </Grid>
                     <Grid xs={12}>
                         <Accordion expanded={accordionSelected === "selection"} onChange={handleAccordionChange("selection")}>
