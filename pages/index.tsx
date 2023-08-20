@@ -22,6 +22,7 @@ import { daysList, lastUpdated, timetable, timetableVersion } from "../data/time
 import axios from "axios";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function Home({
   dayNumber,
@@ -111,7 +112,7 @@ export default function Home({
             </Typography>
           </Grid>
           <Grid xs={12} sx={{paddingY: "2%", display: "flex", justifyContent: "flex-end"}}>
-            <Button variant="contained" onClick={() => {router.push("/selection")}}>Course Selection</Button>
+            <Button variant="contained"><Link href="/selection">Course Selection</Link></Button>
           </Grid>
           <Grid
             xs={12}

@@ -9,11 +9,12 @@ import { useRouter } from "next/router";
 import {Delete, ExpandMore} from "@mui/icons-material"
 
 
-export default function Selection({coursesList} : {coursesList: SubjectSection[]}) {
+export default function Selection() {
     const [courses, setCourses] = useState<SubjectSection[]>([]);
     const [tempCourses, setTempCourses] = useState<SubjectSection[]>([]);
     const [search, setSearch] = useState<string>("");
-    const [coursesFullList, setCoursesFullList] = useState<SubjectSection[]>(coursesList)
+    const [coursesFullList, setCoursesFullList] = useState<SubjectSection[]>([])
+    const [coursesList, setCoursesList] = useState<SubjectSection[]>(subjectSectionCombo)
     const [accordionSelected, setAccordionSelected] = useState<string | false>("selection")
     const router = useRouter()
     const columns = [
@@ -23,7 +24,6 @@ export default function Selection({coursesList} : {coursesList: SubjectSection[]
     ]
 
     useEffect(() => {
-
         let storedCourses : SubjectSection[] = []
         if (localStorage.getItem("courses") !== null) {
             storedCourses = JSON.parse(localStorage.getItem("courses") as string)
@@ -35,7 +35,7 @@ export default function Selection({coursesList} : {coursesList: SubjectSection[]
     }, [])
 
     useEffect(() => {
-        let removeAlreadyAdded : SubjectSection[] = []       
+        let removeAlreadyAdded : SubjectSection[] = []
         let searchFiltered = coursesList.filter((course) => {
             return course.subject.toLowerCase().includes(search.toLowerCase()) || course.section.toLowerCase().includes(search.toLowerCase()) || course.teacher.toLowerCase().includes(search.toLowerCase())
         })
@@ -147,12 +147,4 @@ export default function Selection({coursesList} : {coursesList: SubjectSection[]
             </div>
         </div>
     )
-}
-
-export async function getServerSideProps() {
-    return {
-        props: {
-            coursesList: subjectSectionCombo
-        }
-    }
 }
