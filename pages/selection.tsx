@@ -7,6 +7,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Button, Paper, TableCont
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useRouter } from "next/router";
 import {Delete, ExpandMore} from "@mui/icons-material"
+import Link from "next/link";
 
 
 export default function Selection() {
@@ -89,7 +90,7 @@ export default function Selection() {
                         <Typography variant="h3" sx={{textAlign: "center"}}>Subject Selection</Typography>    
                     </Grid>
                     <Grid xs={12} sx={{paddingY: "1%", display: "flex", justifyContent: "flex-end"}}>
-                        <Button variant="contained" onClick={() => {router.push("/")}}>Show Timetable</Button>
+                        <Button variant="contained"><Link href="/">Show Timetable</Link></Button>
                     </Grid>
                     <Grid xs={12}>
                         <Accordion expanded={accordionSelected === "selection"} onChange={handleAccordionChange("selection")}>
