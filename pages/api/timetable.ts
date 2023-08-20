@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {timetable} from '../../data/timetable'
-import { TimetableObject } from '@/interface/timetable'
+import { Classes, TimetableObject } from '@/interface/timetable'
 
 type Data = {
-  timetableObject: TimetableObject | null
+  timetableObject: TimetableObject[] | null
 }
 
 export default function handler(
@@ -12,11 +12,24 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   if (req.method === 'POST') {
-    if (req.body.day != null) {
-      let tempTimetable = timetable[req.body.day]
-      tempTimetable.classes.sort((a, b) : number => { return a.slot - b.slot})
-      let finalTimetable = {"slots":tempTimetable.slots, "classes":tempTimetable.classes.filter((value) => {return value.section == "BSE-6A" })}
-      res.status(200).json({ timetableObject: finalTimetable })
+    if (req.body.subjectList != null) {
+      let timetableFinal: TimetableObject[] = []
+      let payload : Classes[] = [];
+      payload = req.body.subjectList;
+      timetable.forEach((timetablePart) => {
+        let tempObject : TimetableObject = {slots: [], classes: []};
+        tempObject.slots = timetablePart.slots;
+        tempObject.classes = [];
+        timetablePart.classes.filter((classObject) => {
+          payload.forEach((selectedSubject : Classes) => {
+            if (classObject.subject === selectedSubject.subject && classObject.section === selectedSubject.section) {
+              tempObject.classes.push(classObject);
+            }
+          })
+        })
+        timetableFinal.push(tempObject);
+      })
+      res.status(200).json({ timetableObject: timetableFinal })
       return
     }
   }

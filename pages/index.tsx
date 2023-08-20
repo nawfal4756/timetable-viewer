@@ -1,5 +1,6 @@
 import { TimetableObject } from "@/interface/timetable";
 import {
+  Button,
   Fade,
   FormControlLabel,
   InputLabel,
@@ -17,32 +18,52 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { daysList, timetable, timetableVersion } from "../data/timetable";
+import { daysList, lastUpdated, timetable, timetableVersion } from "../data/timetable";
 import axios from "axios";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function Home({
   dayNumber,
   tempTimetable,
   timetableVersionNumber,
+  lastUpdatedDate
 }: {
   dayNumber: number;
-  tempTimetable: TimetableObject;
+  tempTimetable: TimetableObject[];
   timetableVersionNumber: string;
+  lastUpdatedDate: string
 }) {
   const [day, setDay] = useState<number>(dayNumber);
-  const [data, setData] = useState<TimetableObject>(tempTimetable);
+  const [data, setData] = useState<TimetableObject[]>(tempTimetable);
   const [displayProperty, setDisplayProperty] = useState<string>("none");
   const [teacherData, setTeacherData] = useState<boolean>(false);
+  const router = useRouter()
 
   useEffect(() => {
     async function fetchData() {
-      console.log(day);
-      let response = await axios.post("/api/timetable", { day: day });
+      let response = await axios.post("/api/timetable", { subjectList: JSON.parse(localStorage.getItem("courses")!) });
       setData(response.data.timetableObject);
+      localStorage.setItem("timetable", JSON.stringify(response.data.timetableObject));
+      localStorage.setItem("timetableVersion", timetableVersionNumber);
+      localStorage.setItem("date", new Date().toISOString())
     }
-    fetchData();
-  }, [day]);
+
+    if (localStorage.getItem("courses") === null) {
+      router.push("/selection");
+    }
+    
+    let localStorageDate = localStorage.getItem("date")!;
+    if (localStorage.getItem("date") === null || new Date(lastUpdatedDate) > new Date(localStorageDate) || localStorage.getItem("coursesUpdated") == "true") {
+      console.log("API Called");
+      localStorage.setItem("coursesUpdated", "false")
+      fetchData();
+    }
+    else {
+      setData(JSON.parse(localStorage.getItem("timetable")!));
+    }
+
+  }, [router, timetableVersionNumber, lastUpdatedDate]);
 
   const handleDayChange = (event: SelectChangeEvent) => {
     setDay(event.target.value as unknown as number);
@@ -88,6 +109,9 @@ export default function Home({
             <Typography variant="h5">
               Timetable Version: {timetableVersionNumber}
             </Typography>
+          </Grid>
+          <Grid xs={12} sx={{paddingY: "2%", display: "flex", justifyContent: "flex-end"}}>
+            <Button variant="contained" onClick={() => {router.push("/selection")}}>Course Selection</Button>
           </Grid>
           <Grid
             xs={12}
@@ -145,10 +169,10 @@ export default function Home({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.classes.map((object, index) => {
+                  {data[day].classes.length == 0 ? <TableRow><TableCell colSpan={4} sx={{textAlign: "center"}}><Typography variant="h6">No Classes</Typography></TableCell></TableRow> : data[day]?.classes.map((object, index) => {
                     return (
                       <TableRow key={index}>
-                        <TableCell>{data.slots[object.slot - 1]}</TableCell>
+                        <TableCell>{data[day].slots[object.slot - 1]}</TableCell>
                         <TableCell>{object.subject}</TableCell>
                         <TableCell>{object.section}</TableCell>
                         <TableCell>{object.room}</TableCell>
@@ -192,8 +216,9 @@ export async function getServerSideProps() {
   return {
     props: {
       dayNumber: finalDay,
-      tempTimetable: timetable[0],
+      tempTimetable: timetable,
       timetableVersionNumber: timetableVersion,
+      lastUpdatedDate: lastUpdated
     },
   };
 }

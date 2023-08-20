@@ -3,12 +3,14 @@ import json
 import openpyxl as op
 import sys
 import os
+from datetime import datetime 
 
 TIMETABLE_NAME = sys.argv[1]
 batchCoursesList = []
 periodsList = []
 daysListEnumerated = []
 batchesEnumerated = []
+subjectSectionCombo = []
 
 def getCourses(timetableName, sheetName):
     strippedValues = []
@@ -69,6 +71,7 @@ def getAllPeriods(sheet):
                         roomSeparated = room.split("(")
                         finalRoom = roomSeparated[0].strip()
                         classesList.append({"subject":subject, "section":section, "slot": slot, "room":finalRoom, "teacher":teacher})
+                        subjectSectionCombo.append({"subject":subject, "section":section, "teacher":teacher})
 
     return classesList
 
@@ -91,10 +94,18 @@ timetableVersion = "Unknown"
 if len(fileName) > 1:
     timetableVersion = fileName[1].split(".")[0]
 
+comboDataFrame = pd.DataFrame(subjectSectionCombo)
+comboDataFrame = comboDataFrame.drop_duplicates()
+comboDataFrame['id'] = comboDataFrame.index
+subjectSectionComboList = comboDataFrame.to_dict('records')
+
 directory = os.getcwd()
 directorySeperated = directory.split("\\")
 directorySeperated.pop()
 finalDirectory = "\\".join(directorySeperated) + "\\data\\timetable.js"
+
+now = datetime.now()
+dt_string = now.strftime("%Y-/%m-/%d %H:%M:%S")
 
 f = open(finalDirectory, "w")
 f.write("export const timetableVersion = '" + timetableVersion + "'\n")
@@ -106,4 +117,7 @@ f.write("\nexport const daysList = ")
 f.write(json.dumps(daysListEnumerated))
 f.write("\nexport const batchesEnumerated = ")
 f.write(json.dumps(batchesEnumerated))
+f.write("\nexport const subjectSectionCombo = ")
+f.write(json.dumps(subjectSectionComboList))
+f.write("\nexport const lastUpdated = '" + dt_string + "'")
 f.close()
