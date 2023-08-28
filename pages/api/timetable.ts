@@ -33,6 +33,10 @@ export default function handler(
       return
     }
   }
+  else if (req.method === 'GET') {
+    res.status(200).json({ timetableObject: timetable })
+    return
+  }
 
   res.status(404).json({ timetableObject: null })
 }

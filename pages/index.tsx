@@ -46,23 +46,34 @@ export default function Home({
 
   useEffect(() => {
     async function fetchData() {
-      let response = await axios.post("/api/timetable", { subjectList: JSON.parse(localStorage.getItem("courses")!) });
+      let response: any = ""
+      console.log(localStorage.getItem("courses"))
+      if (localStorage.getItem("courses") === null) {
+        response = await axios.get("/api/timetable")
+      }
+      else {
+        response = await axios.post("/api/timetable", { subjectList: JSON.parse(localStorage.getItem("courses")!) });
+      }
       setData(response.data.timetableObject);
       localStorage.setItem("timetable", JSON.stringify(response.data.timetableObject));
       localStorage.setItem("timetableVersion", timetableVersionNumber);
       localStorage.setItem("date", new Date().toISOString())
     }
 
-    if (localStorage.getItem("courses") === null) {
+    if (localStorage.getItem("courses") === null && localStorage.getItem("first") === null) {
+      localStorage.setItem("first", "true");
       router.push("/selection");
     }
     
     let localStorageDate = localStorage.getItem("date")!;
-    if (localStorage.getItem("date") === null || new Date(lastUpdatedDate) > new Date(localStorageDate) || localStorage.getItem("coursesUpdated") == "true") {
-      localStorage.setItem("coursesUpdated", "false")
+    console.log("Check")
+    if (localStorage.getItem("date") === null || new Date(lastUpdatedDate) > new Date(localStorageDate) || localStorage.getItem("coursesUpdated") == "true" || localStorage.getItem("timetable") === null) {
+      console.log("In if")
       fetchData();
+      localStorage.setItem("coursesUpdated", "false")
     }
     else {
+      console.log("In else")
       setData(JSON.parse(localStorage.getItem("timetable")!));
     }
 
