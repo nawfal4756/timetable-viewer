@@ -171,7 +171,7 @@ export default function Home({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data[day].classes.length == 0 ? <TableRow><TableCell colSpan={4} sx={{textAlign: "center"}}><Typography variant="h6">No Classes</Typography></TableCell></TableRow> : data[day]?.classes.map((object, index) => {
+                  {data[day].classes.length == 0 ? <TableRow><TableCell colSpan={4} sx={{textAlign: "center"}}><Typography variant="h6">No Classes</Typography></TableCell></TableRow> : data[day]?.classes.sort((a, b) => {return a.slot - b.slot}).map((object, index) => {
                     return (
                       <TableRow key={index}>
                         <TableCell>{data[day].slots[object.slot - 1]}</TableCell>
@@ -221,7 +221,7 @@ export async function getServerSideProps() {
       tempTimetable: timetable,
       timetableVersionNumber: timetableVersion,
       lastUpdatedDate: lastUpdated,
-      appVersion: process.env.REACT_APP_VERSION,
+      appVersion: process.env.npm_package_version,
     },
   };
 }
