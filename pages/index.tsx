@@ -48,7 +48,7 @@ export default function Home({
     async function fetchData() {
       let response: any = ""
       console.log(localStorage.getItem("courses"))
-      if (localStorage.getItem("courses") === null) {
+      if (localStorage.getItem("courses") === null || localStorage.getItem("courses") === "[]") {
         response = await axios.get("/api/timetable")
       }
       else {
@@ -67,7 +67,7 @@ export default function Home({
     
     let localStorageDate = localStorage.getItem("date")!;
     console.log("Check")
-    if (localStorage.getItem("date") === null || new Date(lastUpdatedDate) > new Date(localStorageDate) || localStorage.getItem("coursesUpdated") == "true" || localStorage.getItem("timetable") === null) {
+    if (localStorage.getItem("date") === null || new Date(lastUpdatedDate) > new Date(localStorageDate) || localStorage.getItem("coursesUpdated") == "true" || localStorage.getItem("timetable") === null || (localStorage.getItem("coursesUpdated") == "true" && localStorage.getItem("courses") === "[]")) {
       console.log("In if")
       fetchData();
       localStorage.setItem("coursesUpdated", "false")
