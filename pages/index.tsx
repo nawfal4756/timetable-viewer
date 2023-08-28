@@ -221,7 +221,7 @@ export async function getServerSideProps() {
       tempTimetable: timetable,
       timetableVersionNumber: timetableVersion,
       lastUpdatedDate: lastUpdated,
-      appVersion: process.env.npm_package_version,
+      appVersion: process.env.RELEASE,
     },
   };
 }

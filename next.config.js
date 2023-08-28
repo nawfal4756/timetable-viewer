@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
+    env: {
+      RELEASE: process.env.npm_package_version,
+    }
 };
 const withPWA = require("next-pwa")({
   dest: "public",
