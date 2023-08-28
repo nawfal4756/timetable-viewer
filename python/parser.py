@@ -59,6 +59,7 @@ def getAllPeriods(sheet):
                     if slotDetail.find("\n") != -1:
                         slotTeacher = slotDetail.split("\n")
                         slotSeperated = slotTeacher[0].split(" ")
+                        print(slotSeperated)
                         if len(slotSeperated) > 2:
                             section = slotSeperated[2].strip()
                             subject = slotSeperated[0].strip() + "-" + slotSeperated[1].strip()
