@@ -29,12 +29,14 @@ export default function Home({
   dayNumber,
   tempTimetable,
   timetableVersionNumber,
-  lastUpdatedDate
+  lastUpdatedDate,
+  appVersion
 }: {
   dayNumber: number;
   tempTimetable: TimetableObject[];
   timetableVersionNumber: string;
-  lastUpdatedDate: string
+  lastUpdatedDate: string,
+  appVersion: string
 }) {
   const [day, setDay] = useState<number>(dayNumber);
   const [data, setData] = useState<TimetableObject[]>(tempTimetable);
@@ -57,7 +59,6 @@ export default function Home({
     
     let localStorageDate = localStorage.getItem("date")!;
     if (localStorage.getItem("date") === null || new Date(lastUpdatedDate) > new Date(localStorageDate) || localStorage.getItem("coursesUpdated") == "true") {
-      console.log("API Called");
       localStorage.setItem("coursesUpdated", "false")
       fetchData();
     }
@@ -142,7 +143,6 @@ export default function Home({
               onChange={handleDayChange}
             >
               {daysList.map((object) => {
-                // console.log(object);
                 return (
                   <MenuItem key={object.value} value={object.value}>
                     {object.day}
@@ -194,7 +194,7 @@ export default function Home({
           </Grid>
           <Grid xs={12}>
             <Typography sx={{ textAlign: "center", mt: 2, color: "gray" }}>
-              App Version: 0.0.2
+              App Version: {appVersion}
             </Typography>
           </Grid>
         </Grid>
@@ -220,7 +220,8 @@ export async function getServerSideProps() {
       dayNumber: finalDay,
       tempTimetable: timetable,
       timetableVersionNumber: timetableVersion,
-      lastUpdatedDate: lastUpdated
+      lastUpdatedDate: lastUpdated,
+      appVersion: process.env.REACT_APP_VERSION,
     },
   };
 }
