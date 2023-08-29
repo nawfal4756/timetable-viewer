@@ -38,7 +38,7 @@ def extractWorksheetName(timetable):
     wb = op.load_workbook(timetable)
     worksheets = wb.sheetnames
     del worksheets[0]
-    worksheets.remove("Course Pairing Information")
+    worksheets.remove("Course Pairing")
     worksheets
     days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', "saturday", "sunday"]
     for idx, value in enumerate(worksheets):
@@ -60,12 +60,18 @@ def getAllPeriods(sheet):
                         slotTeacher = slotDetail.split("\n")
                         slotSeperated = slotTeacher[0].split(" ")
                         print(slotSeperated)
-                        if len(slotSeperated) > 2:
-                            section = slotSeperated[2].strip()
-                            subject = slotSeperated[0].strip() + "-" + slotSeperated[1].strip()
+                        if len(slotSeperated) > 1:
+                            if len(slotSeperated) > 2:
+                                section = slotSeperated[2].strip()
+                                subject = slotSeperated[0].strip() + "-" + slotSeperated[1].strip()
+                            else:
+                                section = slotSeperated[1].strip()
+                                subject = slotSeperated[0].strip()
                         else:
-                            section = slotSeperated[1].strip()
-                            subject = slotSeperated[0].strip()
+                            slotSeperated = slotTeacher[0].split("-")
+                            if len(slotSeperated) > 1:
+                                section = slotSeperated[1].strip() + "-" + slotSeperated[2].strip()
+                                subject = slotSeperated[0].strip()
                         teacher = slotTeacher[1].strip()
                         slot = sheet.iloc[0, columnIndex]
                         room = sheet.iloc[rowIndex, 0]
