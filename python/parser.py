@@ -99,7 +99,11 @@ for index, value in enumerate(daysList):
 fileName = TIMETABLE_NAME.split("-")
 timetableVersion = "Unknown"
 if len(fileName) > 1:
-    timetableVersion = fileName[1].split(".")[0]
+    timetableVersion = fileName[1].split(".")
+    if len(timetableVersion) > 2:
+        timetableVersion = timetableVersion[0] + "." + timetableVersion[1]
+    else:
+        timetableVersion = timetableVersion[0]
 
 comboDataFrame = pd.DataFrame(subjectSectionCombo)
 comboDataFrame = comboDataFrame.drop_duplicates()
