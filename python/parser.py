@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import json
 import openpyxl as op
 import sys
@@ -42,7 +43,7 @@ def extractWorksheetName(timetable):
     worksheets
     days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', "saturday", "sunday"]
     for idx, value in enumerate(worksheets):
-        if value.lower() in days:
+        if value.lower().strip() in days:
             daysList.append(worksheets[idx])
 
     batchesList = [value for value in worksheets if value not in daysList]
@@ -55,7 +56,8 @@ def getAllPeriods(sheet):
     for rowIndex in range(3,rowsLength):
             for columnIndex in range (1, columnsLength):
                 slotDetail = sheet.iloc[rowIndex, columnIndex]
-                if (type(slotDetail) != float):
+                if type(slotDetail) != float and slotDetail != np.nan and type(slotDetail) != np.float64:
+                    print(slotDetail)
                     if slotDetail.find("\n") != -1:
                         slotTeacher = slotDetail.split("\n")
                         slotSeperated = slotTeacher[0].split(" ")
