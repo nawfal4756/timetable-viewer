@@ -29,7 +29,7 @@ def getSlots(sheet):
     columnsLength = len(sheet.columns)
     for rowIndex in range(1,2):
         for columnIndex in range (1, columnsLength):
-            if sheet.iloc[rowIndex, columnIndex] != np.nan:
+            if type(sheet.iloc[rowIndex, columnIndex]) != np.nan:
                 slotList.append(sheet.iloc[rowIndex, columnIndex])
             
     return slotList
