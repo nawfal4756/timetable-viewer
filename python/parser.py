@@ -29,7 +29,8 @@ def getSlots(sheet):
     columnsLength = len(sheet.columns)
     for rowIndex in range(1,2):
         for columnIndex in range (1, columnsLength):
-            slotList.append(sheet.iloc[rowIndex, columnIndex])
+            if sheet.iloc[rowIndex, columnIndex] != np.nan:
+                slotList.append(sheet.iloc[rowIndex, columnIndex])
             
     return slotList
 
@@ -57,7 +58,6 @@ def getAllPeriods(sheet):
             for columnIndex in range (1, columnsLength):
                 slotDetail = sheet.iloc[rowIndex, columnIndex]
                 if type(slotDetail) != float and slotDetail != np.nan and type(slotDetail) != np.float64:
-                    print(slotDetail)
                     if slotDetail.find("\n") != -1:
                         slotTeacher = slotDetail.split("\n")
                         slotSeperated = slotTeacher[0].split(" ")
